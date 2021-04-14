@@ -7,7 +7,7 @@
 
 import {
     XmlDiscriminatorValue, XmlObject, XmlXPathSelector,
-} from "@r2-utils-js/_utils/xml-js-mapper";
+} from "@r2-utils-rn/_utils/xml-js-mapper";
 
 import { Audio } from "./smil-audio";
 import { Img } from "./smil-img";

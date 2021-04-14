@@ -10,8 +10,8 @@ import * as mime from "mime-types";
 
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
-import { bufferToStream, streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { IStreamAndLength } from "@r2-utils-js/_utils/zip/zip";
+import { bufferToStream, streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { IStreamAndLength } from "@r2-utils-rn/_utils/zip/zip";
 
 import { ITransformer } from "./transformer";
 

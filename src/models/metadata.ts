@@ -10,8 +10,8 @@ import {
     JsonConverter, JsonElementType, JsonObject, JsonProperty, OnDeserialized,
 } from "ta-json-x";
 
-import { IWithAdditionalJSON, JsonMap } from "@r2-lcp-js/serializable";
-import { JsonStringConverter } from "@r2-utils-js/_utils/ta-json-string-converter";
+import { IWithAdditionalJSON, JsonMap } from "@r2-lcp-rn/serializable";
+import { JsonStringConverter } from "@r2-utils-rn/_utils/ta-json-string-converter";
 
 import { BelongsTo } from "./metadata-belongsto";
 import { Contributor } from "./metadata-contributor";

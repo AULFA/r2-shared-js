@@ -11,15 +11,15 @@ import {
     JsonConverter, JsonElementType, JsonObject, JsonProperty, OnDeserialized,
 } from "ta-json-x";
 
-import { LCP } from "@r2-lcp-js/parser/epub/lcp";
-import { JsonStringConverter } from "@r2-utils-js/_utils/ta-json-string-converter";
-import { IZip } from "@r2-utils-js/_utils/zip/zip";
+import { LCP } from "@r2-lcp-rn/parser/epub/lcp";
+import { JsonStringConverter } from "@r2-utils-rn/_utils/ta-json-string-converter";
+import { IZip } from "@r2-utils-rn/_utils/zip/zip";
 
 import { IInternal } from "./internal";
 import { Metadata } from "./metadata";
 import { Link } from "./publication-link";
 
-// import { JsonStringConverter } from "@r2-utils-js/_utils/ta-json-string-converter";
+// import { JsonStringConverter } from "@r2-utils-rn/_utils/ta-json-string-converter";
 // import { IPublicationCollection } from "./publication-collection";
 
 const debug = debug_("r2:shared#models/publication");

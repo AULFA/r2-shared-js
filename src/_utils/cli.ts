@@ -22,11 +22,11 @@ import { convertDaisyToReadiumWebPub } from "@parser/daisy-convert-to-epub";
 import { isEPUBlication } from "@parser/epub";
 import { lazyLoadMediaOverlays } from "@parser/epub-daisy-common";
 import { PublicationParsePromise } from "@parser/publication-parser";
-import { setLcpNativePluginPath } from "@r2-lcp-js/parser/epub/lcp";
-import { JsonArray, JsonMap, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-js/serializable";
-import { isHTTP } from "@r2-utils-js/_utils/http/UrlUtils";
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { IStreamAndLength, IZip } from "@r2-utils-js/_utils/zip/zip";
+import { setLcpNativePluginPath } from "@r2-lcp-rn/parser/epub/lcp";
+import { JsonArray, JsonMap, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-rn/serializable";
+import { isHTTP } from "@r2-utils-rn/_utils/http/UrlUtils";
+import { streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { IStreamAndLength, IZip } from "@r2-utils-rn/_utils/zip/zip";
 import { Transformers } from "@transform/transformer";
 
 import { initGlobalConverters_GENERIC, initGlobalConverters_SHARED } from "../init-globals";
@@ -437,7 +437,7 @@ async function extractEPUB_Link(pub: Publication, zip: IZip, outDir: string, lin
 async function extractEPUB(isEPUB: boolean, pub: Publication, outDir: string, keys: string[] | undefined) {
 
     // automatically handles exploded filesystem too,
-    // via the zip-ex.ts abstraction in r2-utils-js
+    // via the zip-ex.ts abstraction in r2-utils-rn
     // returned by zip-factory.ts (zipLoadPromise() function)
     const zipInternal = pub.findFromInternal("zip");
     if (!zipInternal) {

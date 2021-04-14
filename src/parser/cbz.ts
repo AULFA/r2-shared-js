@@ -14,10 +14,10 @@ import { Metadata } from "@models/metadata";
 import { Contributor } from "@models/metadata-contributor";
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { XML } from "@r2-utils-js/_utils/xml-js-mapper";
-import { IStreamAndLength, IZip } from "@r2-utils-js/_utils/zip/zip";
-import { zipLoadPromise } from "@r2-utils-js/_utils/zip/zipFactory";
+import { streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { XML } from "@r2-utils-rn/_utils/xml-js-mapper";
+import { IStreamAndLength, IZip } from "@r2-utils-rn/_utils/zip/zip";
+import { zipLoadPromise } from "@r2-utils-rn/_utils/zip/zipFactory";
 
 import { tryDecodeURI } from "../_utils/decodeURI";
 import { zipHasEntry } from "../_utils/zipHasEntry";

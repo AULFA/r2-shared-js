@@ -8,8 +8,8 @@
 // https://github.com/edcarroll/ta-json
 import { JsonElementType, JsonObject, JsonProperty } from "ta-json-x";
 
-import { Encrypted } from "@r2-lcp-js/models/metadata-encrypted";
-import { IWithAdditionalJSON, JsonMap } from "@r2-lcp-js/serializable";
+import { Encrypted } from "@r2-lcp-rn/models/metadata-encrypted";
+import { IWithAdditionalJSON, JsonMap } from "@r2-lcp-rn/serializable";
 
 export enum LayoutEnum {
     Fixed = "fixed",

@@ -988,8 +988,8 @@ Git diff:
 
 Changes (NPM updates):
 * `@types/node`
-* `r2-utils-js`
-* `r2-lcp-js`
+* `r2-utils-rn`
+* `r2-lcp-rn`
 
 Git revision info:
 * https://unpkg.com/r2-shared-js@1.0.0-alpha.2/dist/gitrev.json

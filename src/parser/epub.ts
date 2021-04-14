@@ -6,11 +6,11 @@
 // ==LICENSE-END==
 
 import * as debug_ from "debug";
-import * as fs from "fs";
 import { imageSize } from "image-size";
 import { ISize } from "image-size/dist/types/interface";
 import * as moment from "moment";
 import * as path from "path";
+import * as rnfs from "react-native-fs";
 import { URL } from "url";
 import * as xmldom from "xmldom";
 import * as xpath from "xpath";
@@ -24,14 +24,14 @@ import {
 } from "@models/metadata-properties";
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
-import { Encrypted } from "@r2-lcp-js/models/metadata-encrypted";
-import { LCP } from "@r2-lcp-js/parser/epub/lcp";
-import { TaJsonDeserialize } from "@r2-lcp-js/serializable";
-import { isHTTP } from "@r2-utils-js/_utils/http/UrlUtils";
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { XML } from "@r2-utils-js/_utils/xml-js-mapper";
-import { IStreamAndLength, IZip } from "@r2-utils-js/_utils/zip/zip";
-import { zipLoadPromise } from "@r2-utils-js/_utils/zip/zipFactory";
+import { Encrypted } from "@r2-lcp-rn/models/metadata-encrypted";
+import { LCP } from "@r2-lcp-rn/parser/epub/lcp";
+import { TaJsonDeserialize } from "@r2-lcp-rn/serializable";
+import { isHTTP } from "@r2-utils-rn/_utils/http/UrlUtils";
+import { streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { XML } from "@r2-utils-rn/_utils/xml-js-mapper";
+import { IStreamAndLength, IZip } from "@r2-utils-rn/_utils/zip/zip";
+import { zipLoadPromise } from "@r2-utils-rn/_utils/zip/zipFactory";
 
 import { tryDecodeURI } from "../_utils/decodeURI";
 import { zipHasEntry } from "../_utils/zipHasEntry";
@@ -116,14 +116,20 @@ export enum EPUBis {
     RemoteExploded = "RemoteExploded",
     RemotePacked = "RemotePacked",
 }
-export function isEPUBlication(urlOrPath: string): EPUBis | undefined {
+
+export async function isEPUBlication(urlOrPath: string): Promise<EPUBis | undefined> {
     let p = urlOrPath;
     const http = isHTTP(urlOrPath);
     if (http) {
         const url = new URL(urlOrPath);
         p = url.pathname;
-    } else if (fs.existsSync(path.join(urlOrPath, "META-INF", "container.xml"))) {
-        return EPUBis.LocalExploded;
+    } else {
+        try {
+            await rnfs.stat(path.join(urlOrPath, "META-INF", "container.xml"));
+            return EPUBis.LocalExploded;
+        } catch (_) {
+            // Ignore
+        }
     }
     const fileName = path.basename(p);
     const ext = path.extname(fileName).toLowerCase();
@@ -143,14 +149,14 @@ export function isEPUBlication(urlOrPath: string): EPUBis | undefined {
 
 export async function EpubParsePromise(filePath: string): Promise<Publication> {
 
-    const isAnEPUB = isEPUBlication(filePath);
+    const isAnEPUB = await isEPUBlication(filePath);
 
     // // excludes EPUBis.RemoteExploded
     // const canLoad = isAnEPUB === EPUBis.LocalExploded ||
     //     isAnEPUB === EPUBis.LocalPacked ||
     //     isAnEPUB === EPUBis.RemotePacked;
     // if (!canLoad) {
-    //     // TODO? r2-utils-js zip-ext.ts => variant for HTTP without directory listing? (no deterministic zip entries)
+    //     // TODO? r2-utils-rn zip-ext.ts => variant for HTTP without directory listing? (no deterministic zip entries)
     //     const err = "Cannot load exploded remote EPUB (needs filesystem access to list directory contents).";
     //     debug(err);
     //     return Promise.reject(err);

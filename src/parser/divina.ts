@@ -6,19 +6,19 @@
 // ==LICENSE-END==
 
 import * as debug_ from "debug";
-import * as fs from "fs";
 import * as http from "http";
 import * as https from "https";
 import * as path from "path";
+import * as rnfs from "react-native-fs";
 
 import { Publication } from "@models/publication";
-import { LCP } from "@r2-lcp-js/parser/epub/lcp";
-import { TaJsonDeserialize } from "@r2-lcp-js/serializable";
-import { isHTTP } from "@r2-utils-js/_utils/http/UrlUtils";
-import { traverseJsonObjects } from "@r2-utils-js/_utils/JsonUtils";
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { IStreamAndLength, IZip } from "@r2-utils-js/_utils/zip/zip";
-import { zipLoadPromise } from "@r2-utils-js/_utils/zip/zipFactory";
+import { LCP } from "@r2-lcp-rn/parser/epub/lcp";
+import { TaJsonDeserialize } from "@r2-lcp-rn/serializable";
+import { isHTTP } from "@r2-utils-rn/_utils/http/UrlUtils";
+import { traverseJsonObjects } from "@r2-utils-rn/_utils/JsonUtils";
+import { streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { IStreamAndLength, IZip } from "@r2-utils-rn/_utils/zip/zip";
+import { zipLoadPromise } from "@r2-utils-rn/_utils/zip/zipFactory";
 
 import { zipHasEntry } from "../_utils/zipHasEntry";
 
@@ -47,7 +47,7 @@ export async function DivinaParsePromise(filePath: string, isDivina?: Divinais, 
     //     isAnDivina === Divinais.LocalPacked ||
     //     isAnDivina === Divinais.RemotePacked;
     // if (!canLoad) {
-    //     // TODO? r2-utils-js zip-ext.ts => variant for HTTP without directory listing? (no deterministic zip entries)
+    //     // TODO? r2-utils-rn zip-ext.ts => variant for HTTP without directory listing? (no deterministic zip entries)
     //     const err = "Cannot load exploded remote EPUB (needs filesystem access to list directory contents).";
     //     debug(err);
     //     return Promise.reject(err);
@@ -315,8 +315,9 @@ export async function isDivinaPublication(urlOrPath: string): Promise<Divinais |
 
     if (!isHttp && fileName === "manifest.json") {
         // const manPath = fileName === "manifest.json" ? p : path.join(p, "manifest.json");
-        if (fs.existsSync(p)) {
-            const manStr = fs.readFileSync(p, { encoding: "utf8" });
+        try {
+            await rnfs.stat(p);
+            const manStr = await rnfs.readFile(p, { encoding: "utf8" });
             const manJson = JSON.parse(manStr);
             if (manJson.metadata && manJson.metadata["@type"] &&
                 (/http[s]?:\/\/schema\.org\/VisualArtwork$/.test(manJson.metadata["@type"]) ||
@@ -324,6 +325,8 @@ export async function isDivinaPublication(urlOrPath: string): Promise<Divinais |
             ) {
                 return Divinais.LocalExploded;
             }
+        } catch (_) {
+            // Ignore
         }
     }
 

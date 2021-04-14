@@ -6,16 +6,16 @@
 // ==LICENSE-END==
 
 import * as debug_ from "debug";
-import * as fs from "fs";
 import * as moment from "moment";
 import * as path from "path";
+import * as rnfs from "react-native-fs";
 
 import { Metadata } from "@models/metadata";
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
-import { isHTTP } from "@r2-utils-js/_utils/http/UrlUtils";
-import { IZip } from "@r2-utils-js/_utils/zip/zip";
-import { zipLoadPromise } from "@r2-utils-js/_utils/zip/zipFactory";
+import { isHTTP } from "@r2-utils-rn/_utils/http/UrlUtils";
+import { IZip } from "@r2-utils-rn/_utils/zip/zip";
+import { zipLoadPromise } from "@r2-utils-rn/_utils/zip/zipFactory";
 
 import { zipHasEntry } from "../_utils/zipHasEntry";
 import {
@@ -37,6 +37,33 @@ export enum DaisyBookis {
     RemotePacked = "RemotePacked",
 }
 
+async function isLocalExploded(urlOrPath: string): Promise<void> {
+    // TODO replace with Promise.any() polyfill
+    try {
+        await rnfs.stat(path.join(urlOrPath, "package.opf"));
+    } catch (_) {
+        try {
+            await rnfs.stat(path.join(urlOrPath, "Book.opf"));
+        } catch (_) {
+            try {
+                await rnfs.stat(path.join(urlOrPath, "speechgen.opf"));
+            } catch (_) {
+                throw null;
+            }
+        }
+    }
+
+    try {
+        await rnfs.stat(
+            path.join(urlOrPath, "META-INF", "container.xml"),
+        );
+    } catch (_) {
+        return;
+    }
+
+    throw null;
+}
+
 export async function isDaisyPublication(urlOrPath: string): Promise<DaisyBookis | undefined> {
     let p = urlOrPath;
     const http = isHTTP(urlOrPath);
@@ -45,48 +72,45 @@ export async function isDaisyPublication(urlOrPath: string): Promise<DaisyBookis
         p = url.pathname;
         return undefined; // remote DAISY not supported
     } else if (/\.daisy[23]?$/.test(path.extname(path.basename(p)).toLowerCase())) {
-
         return DaisyBookis.LocalPacked;
-
-    } else if (fs.existsSync(path.join(urlOrPath, "package.opf")) ||
-        fs.existsSync(path.join(urlOrPath, "Book.opf")) ||
-        fs.existsSync(path.join(urlOrPath, "speechgen.opf"))
-    ) {
-        if (!fs.existsSync(path.join(urlOrPath, "META-INF", "container.xml"))) {
-
-            return DaisyBookis.LocalExploded;
-        }
     } else {
-        let zip: IZip;
         try {
-            zip = await zipLoadPromise(urlOrPath);
-        } catch (err) {
-            debug(err);
-            return Promise.reject(err);
-        }
-
-        if (!await zipHasEntry(zip, "META-INF/container.xml", undefined)) {
-
-            // if (await zipHasEntry(zip, "package.opf", undefined) ||
-            //     await zipHasEntry(zip, "Book.opf", undefined) ||
-            //     await zipHasEntry(zip, "speechgen.opf", undefined)) {
-            //     return DaisyBookis.LocalPacked;
-            // }
-
-            const entries = await zip.getEntries();
-            const opfZipEntryPath = entries.find((entry) => {
-                // regexp fails?!
-                // return /[^/]+\.opf$/.test(entry);
-                return entry.endsWith(".opf"); // && entry.indexOf("/") < 0 && entry.indexOf("\\") < 0;
-            });
-            if (!opfZipEntryPath) {
-                return undefined;
+            await isLocalExploded(urlOrPath);
+            return DaisyBookis.LocalExploded;
+        } catch (_) {
+            let zip: IZip;
+            try {
+                zip = await zipLoadPromise(urlOrPath);
+            } catch (err) {
+                debug(err);
+                return Promise.reject(err);
             }
 
-            // TODO: check for <dc:Format>ANSI/NISO Z39.86-2005</dc:Format> ?
-            return DaisyBookis.LocalPacked;
+            if (
+                !(await zipHasEntry(zip, "META-INF/container.xml", undefined))
+            ) {
+                // if (await zipHasEntry(zip, "package.opf", undefined) ||
+                //     await zipHasEntry(zip, "Book.opf", undefined) ||
+                //     await zipHasEntry(zip, "speechgen.opf", undefined)) {
+                //     return DaisyBookis.LocalPacked;
+                // }
+
+                const entries = await zip.getEntries();
+                const opfZipEntryPath = entries.find((entry) => {
+                    // regexp fails?!
+                    // return /[^/]+\.opf$/.test(entry);
+                    return entry.endsWith(".opf"); // && entry.indexOf("/") < 0 && entry.indexOf("\\") < 0;
+                });
+                if (!opfZipEntryPath) {
+                    return undefined;
+                }
+
+                // TODO: check for <dc:Format>ANSI/NISO Z39.86-2005</dc:Format> ?
+                return DaisyBookis.LocalPacked;
+            }
         }
     }
+
     return undefined;
 }
 
@@ -210,7 +234,6 @@ const addLinkData = async (
     opf: OPF, zip: IZip, linkItem: Link, item: Manifest) => {
 
     if (publication.Metadata?.AdditionalJSON) {
-
         // dtb:multimediaContent ==> audio,text
         const isFullTextAudio = publication.Metadata.AdditionalJSON["dtb:multimediaType"] === "audioFullText";
 
@@ -224,7 +247,6 @@ const addLinkData = async (
             await addMediaOverlaySMIL(linkItem, item, opf, zip);
 
             if (linkItem.MediaOverlays && !linkItem.MediaOverlays.initialized) {
-
                 // mo.initialized true/false is automatically handled
                 await lazyLoadMediaOverlays(publication, linkItem.MediaOverlays);
 
