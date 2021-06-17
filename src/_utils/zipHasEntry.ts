@@ -7,7 +7,7 @@
 
 import * as debug_ from "debug";
 
-import { IZip } from "@r2-utils-js/_utils/zip/zip";
+import { IZip } from "@r2-utils-rn/_utils/zip/zip";
 
 const debug = debug_("r2:shared#utils/zipHasEntry");
 

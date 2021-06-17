@@ -6,8 +6,8 @@
 // ==LICENSE-END==
 
 import * as debug_ from "debug";
-import * as fs from "fs";
 import * as path from "path";
+import * as rnfs from "react-native-fs";
 import * as xmldom from "xmldom";
 import * as xpath from "xpath";
 import { ZipFile } from "yazl";
@@ -17,8 +17,8 @@ import { Metadata } from "@models/metadata";
 import { Properties } from "@models/metadata-properties";
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
-import { TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-js/serializable";
-import { IZip } from "@r2-utils-js/_utils/zip/zip";
+import { TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-rn/serializable";
+import { IZip } from "@r2-utils-rn/_utils/zip/zip";
 
 import {
     lazyLoadMediaOverlays, loadFileBufferFromZipPath, loadFileStrFromZipPath, updateDurations,
@@ -26,13 +26,10 @@ import {
 
 const debug = debug_("r2:shared#parser/daisy-convert-to-epub");
 
-function ensureDirs(fspath: string) {
+async function ensureDirs(fspath: string) {
     const dirname = path.dirname(fspath);
 
-    if (!fs.existsSync(dirname)) {
-        ensureDirs(dirname);
-        fs.mkdirSync(dirname);
-    }
+    await rnfs.mkdir(dirname);
 }
 
 // this function modifies the input parameter "publication"!
@@ -61,25 +58,30 @@ export const convertDaisyToReadiumWebPub = async (
         const zip = zipInternal.Value as IZip;
 
         const outputZipPath = path.join(outputDirPath, `${isAudioOnly ? "daisy_audioNCX" : (isTextOnly ? "daisy_textNCX" : "daisy_audioFullText")}-to-epub.webpub`);
-        ensureDirs(outputZipPath);
+        await ensureDirs(outputZipPath);
 
         let timeoutId: NodeJS.Timeout | undefined;
         const zipfile = new ZipFile();
         try {
-            const writeStream = fs.createWriteStream(outputZipPath);
-            zipfile.outputStream.pipe(writeStream)
-                .on("close", () => {
-                    debug("ZIP close");
-                    if (timeoutId) {
-                        clearTimeout(timeoutId);
-                        timeoutId = undefined;
-                        resolve(outputZipPath);
-                    }
-                })
-                .on("error", (e: any) => {
-                    debug("ZIP error", e);
-                    reject(e);
-                });
+            const zipContent = zipfile.outputStream.read();
+            if (zipContent != null) {
+                rnfs.writeFile(outputZipPath, zipContent.toString())
+                    .then(() => {
+                        debug("ZIP close");
+                        if (timeoutId) {
+                            clearTimeout(timeoutId);
+                            timeoutId = undefined;
+                            resolve(outputZipPath);
+                        }
+                    })
+                    .catch((e) => {
+                        debug("ZIP error", e);
+                        reject(e);
+                    });
+            } else {
+                debug("ZIP error: zip content is null");
+                reject("zip content is null");
+            }
 
             // <dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" ...
             const select = xpath.useNamespaces({

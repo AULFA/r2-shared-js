@@ -7,7 +7,7 @@
 
 import {
     XmlDiscriminatorValue, XmlItemType, XmlObject, XmlXPathSelector,
-} from "@r2-utils-js/_utils/xml-js-mapper";
+} from "@r2-utils-rn/_utils/xml-js-mapper";
 
 import { tryDecodeURI } from "../../_utils/decodeURI";
 import { SeqOrPar } from "./smil-seq-or-par";

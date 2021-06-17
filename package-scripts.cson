@@ -8,11 +8,11 @@
   '
 
   'copydist': '
-    cpy "./dist/**/*" ../r2-opds-js/node_modules/r2-shared-js/ --cwd=./ --parents --no-dir &&
-    cpy "./dist/**/*" ../r2-streamer-js/node_modules/r2-shared-js/ --cwd=./ --parents --no-dir &&
-    cpy "./dist/**/*" ../r2-navigator-js/node_modules/r2-shared-js/ --cwd=./ --parents --no-dir &&
-    cpy "./dist/**/*" ../r2-testapp-js/node_modules/r2-shared-js/ --cwd=./ --parents --no-dir &&
-    cpy "./dist/**/*" ../readium-desktop/node_modules/r2-shared-js/ --cwd=./ --parents --no-dir
+    cpy "./dist/**/*" ../r2-opds-js/node_modules/r2-shared-rn/ --cwd=./ --parents --no-dir &&
+    cpy "./dist/**/*" ../r2-streamer-js/node_modules/r2-shared-rn/ --cwd=./ --parents --no-dir &&
+    cpy "./dist/**/*" ../r2-navigator-js/node_modules/r2-shared-rn/ --cwd=./ --parents --no-dir &&
+    cpy "./dist/**/*" ../r2-testapp-js/node_modules/r2-shared-rn/ --cwd=./ --parents --no-dir &&
+    cpy "./dist/**/*" ../readium-desktop/node_modules/r2-shared-rn/ --cwd=./ --parents --no-dir
   '
 
   'quick-build-dist': '
@@ -25,22 +25,22 @@
   '
 
   'gitdist': '
-    cd ../r2-shared-js-dist/ &&
+    cd ../r2-shared-rn-dist/ &&
     git checkout -B develop &&
     (git pull || echo "pull") &&
     (git --no-pager status || echo status) &&
     ((rimraf "*" && echo rimrafOK) || echo rimrafNOK) &&
-    cpy ../r2-shared-js/package.json . &&
-    cpy ../r2-shared-js/package-lock.json . &&
-    cpy ../r2-shared-js/LICENSE . &&
-    cpy ../r2-shared-js/README.md . &&
-    cpy "./docs/**/*" ../r2-shared-js-dist/ --cwd=../r2-shared-js/ --parents --no-dir &&
-    cpy "./dist/**/*" ../r2-shared-js-dist/ --cwd=../r2-shared-js/ --parents --no-dir &&
+    cpy ../r2-shared-rn/package.json . &&
+    cpy ../r2-shared-rn/package-lock.json . &&
+    cpy ../r2-shared-rn/LICENSE . &&
+    cpy ../r2-shared-rn/README.md . &&
+    cpy "./docs/**/*" ../r2-shared-rn-dist/ --cwd=../r2-shared-rn/ --parents --no-dir &&
+    cpy "./dist/**/*" ../r2-shared-rn-dist/ --cwd=../r2-shared-rn/ --parents --no-dir &&
     (git add * || echo add) &&
     (git commit -a -m "add new dist" || echo commit) &&
     (git push --set-upstream origin develop || echo push) &&
     (git --no-pager status || echo status) &&
-    cd ../r2-shared-js
+    cd ../r2-shared-rn
   '
 
   'start': '

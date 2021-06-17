@@ -4,8 +4,8 @@ import * as path from "path";
 import { Metadata } from "@models/metadata";
 import { Contributor } from "@models/metadata-contributor";
 import { IStringMap } from "@models/metadata-multilang";
-import { setLcpNativePluginPath } from "@r2-lcp-js/parser/epub/lcp";
-import { JsonArray, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-js/serializable";
+import { setLcpNativePluginPath } from "@r2-lcp-rn/parser/epub/lcp";
+import { JsonArray, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-rn/serializable";
 
 import { initGlobalConverters_GENERIC, initGlobalConverters_SHARED } from "../src/init-globals";
 import {

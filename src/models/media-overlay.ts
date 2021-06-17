@@ -8,7 +8,7 @@
 // https://github.com/edcarroll/ta-json
 import { JsonConverter, JsonElementType, JsonObject, JsonProperty } from "ta-json-x";
 
-import { JsonStringConverter } from "@r2-utils-js/_utils/ta-json-string-converter";
+import { JsonStringConverter } from "@r2-utils-rn/_utils/ta-json-string-converter";
 
 // http://www.idpf.org/epub/31/spec/epub-mediaoverlays.html#app-clock-examples
 // https://www.w3.org/TR/2008/REC-SMIL3-20081201/smil-timing.html#q22

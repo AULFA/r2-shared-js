@@ -2,8 +2,8 @@ import test from "ava";
 import * as path from "path";
 
 import { Link } from "@models/publication-link";
-import { setLcpNativePluginPath } from "@r2-lcp-js/parser/epub/lcp";
-import { JsonArray, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-js/serializable";
+import { setLcpNativePluginPath } from "@r2-lcp-rn/parser/epub/lcp";
+import { JsonArray, TaJsonDeserialize, TaJsonSerialize } from "@r2-lcp-rn/serializable";
 
 import { initGlobalConverters_GENERIC, initGlobalConverters_SHARED } from "../src/init-globals";
 import { checkType_Array, checkType_String, inspect, logJSON } from "./helpers";

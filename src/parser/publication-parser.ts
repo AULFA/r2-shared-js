@@ -18,7 +18,7 @@ import { DivinaParsePromise, Divinais, isDivinaPublication } from "./divina";
 export async function PublicationParsePromise(filePath: string): Promise<Publication> {
     let isAudio: AudioBookis | undefined;
     let isDivina: Divinais | undefined;
-    return isEPUBlication(filePath) ? EpubParsePromise(filePath) :
+    return (await isEPUBlication(filePath)) ? EpubParsePromise(filePath) :
         (isCBZPublication(filePath) ? CbzParsePromise(filePath) :
             // tslint:disable-next-line: no-conditional-assignment
             ((isDivina = await isDivinaPublication(filePath)) ? DivinaParsePromise(filePath, isDivina) :

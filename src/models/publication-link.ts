@@ -10,7 +10,7 @@ import {
     JsonConverter, JsonElementType, JsonObject, JsonProperty, OnDeserialized,
 } from "ta-json-x";
 
-import { JsonStringConverter } from "@r2-utils-js/_utils/ta-json-string-converter";
+import { JsonStringConverter } from "@r2-utils-rn/_utils/ta-json-string-converter";
 
 import { tryDecodeURI } from "../_utils/decodeURI";
 import { MediaOverlayNode } from "./media-overlay";

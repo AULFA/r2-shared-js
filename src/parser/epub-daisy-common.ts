@@ -21,10 +21,10 @@ import { Subject } from "@models/metadata-subject";
 import { Publication } from "@models/publication";
 import { Link } from "@models/publication-link";
 import { DelinearizeAccessModeSufficient } from "@models/ta-json-string-tokens-converter";
-import { encodeURIComponent_RFC3986 } from "@r2-utils-js/_utils/http/UrlUtils";
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
-import { XML } from "@r2-utils-js/_utils/xml-js-mapper";
-import { IStreamAndLength, IZip } from "@r2-utils-js/_utils/zip/zip";
+import { encodeURIComponent_RFC3986 } from "@r2-utils-rn/_utils/http/UrlUtils";
+import { streamToBufferPromise } from "@r2-utils-rn/_utils/stream/BufferUtils";
+import { XML } from "@r2-utils-rn/_utils/xml-js-mapper";
+import { IStreamAndLength, IZip } from "@r2-utils-rn/_utils/zip/zip";
 import { Transformers } from "@transform/transformer";
 
 import { zipHasEntry } from "../_utils/zipHasEntry";
